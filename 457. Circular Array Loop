@@ -1,0 +1,107 @@
+You are given a circular array nums of positive and negative integers. If a number k at an index is positive, then move forward k steps. 
+Conversely, if it's negative (-k), move backward k steps. Since the array is circular, you may assume that the last element's next element is the first element, 
+and the first element's previous element is the last element.
+
+Determine if there is a loop (or a cycle) in nums. A cycle must start and end at the same index and the cycle's length > 1. 
+Furthermore, movements in a cycle must all follow a single direction. In other words, a cycle must not consist of both forward and backward movements.
+
+Input: [2,-1,1,2,2]
+Output: true
+Explanation: There is a cycle, from index 0 -> 2 -> 3 -> 0. The cycle's length is 3.
+
+Input: [-1,2]
+Output: false
+Explanation: The movement from index 1 -> 1 -> 1 ... is not a cycle, because the cycle's length is 1. By definition the cycle's length must be greater than 1.
+
+Input: [-2,1,-1,-2,-2]
+Output: false
+Explanation: The movement from index 1 -> 2 -> 1 -> ... is not a cycle, because movement from index 1 -> 2 is a forward movement, but movement from index 2 -> 1 is a backward movement. All movements in a cycle must follow a single direction.
+
+class Solution {
+public:
+    const int INF = 5001;
+    bool dfs(vector<int>& nums,int order,int i,int len){  // 此处有个关键点在于是否使用引用，如果不使用引用则会超时。
+        
+        if(nums[i] == 0)
+            return false;
+        if(nums[i] == INF)
+            return true;
+        int temp = nums[i] > 0 ? 1 : -1;
+        if(order != temp)return false;
+        else{
+            int j = ((i+nums[i])%len+len)%len;
+            nums[i] = INF;
+            if(i!=j && dfs(nums,order,j,len)){
+                return true;
+            }
+            else {
+                nums[i] = 0;
+                return false;
+            }
+                
+        }
+    }
+    bool circularArrayLoop(vector<int>& nums) {
+        int len = nums.size();
+        for(int i = 0; i < len ; i ++){
+            if (nums[i] == 0) continue;
+            int order = nums[i]>0 ? 1 : -1;
+            if(dfs(nums,order,i,len)){
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+/*
+[2,-1,1,2,2]
+[0, 1,2,3,4]
+[2, 0,3,0,1]
+
+[-1,2]
+[0, 1]
+[1, 1]
+
+[-2,1,-1,-2,-2]
+[0, 1, 2, 3, 4]
+[3, 2, 1, 1, 2]
+
+class Solution {
+public:
+    const int INF = 1e8;
+    bool dfs(vector<int>& nums, int i, int N, int dir) {
+        // 遇到不符合条件的点，返回false
+        if (nums[i] == 0) return false;
+        // 遇到在考察中的点，说明形成了闭环，返回true
+        if (nums[i] == INF) return true;
+        int ndir = nums[i] > 0 ? 1 : -1;
+        if (ndir == dir) {
+            int j = (N + (nums[i] + i) % N) % N;
+            // 将i处的值设为INF，标志i点在考察中
+            nums[i] = INF;
+            if (j != i && dfs(nums, j, N, dir)) {
+                return true;
+            } else {
+                // i点不符合条件，赋值为0
+                nums[i] = 0;
+                return false;
+            }
+        }
+        return false;
+    }
+
+    bool circularArrayLoop(vector<int>& nums) {
+        int N = nums.size();
+        for (int i = 0; i < N; ++i) {
+            if (nums[i] == 0) continue;
+            int dir = nums[i] > 0 ? 1 : -1;
+            if (dfs(nums, i, N, dir)) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+*/
