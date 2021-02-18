@@ -1,0 +1,70 @@
+Given an n x n array of integers matrix, return the minimum sum of any falling path through matrix.
+A falling path starts at any element in the first row and chooses the element in the next row that is either directly below or diagonally left/right. 
+Specifically, the next element from position (row, col) will be (row + 1, col - 1), (row + 1, col), or (row + 1, col + 1).
+
+Example 1:
+Input: matrix = [[2,1,3],[6,5,4],[7,8,9]]
+Output: 13
+Explanation: There are two falling paths with a minimum sum underlined below:
+[[2,1,3],      [[2,1,3],
+ [6,5,4],       [6,5,4],
+ [7,8,9]]       [7,8,9]]
+ 
+Example 2:
+Input: matrix = [[-19,57],[-40,-5]]
+Output: -59
+Explanation: The falling path with a minimum sum is underlined below:
+[[-19,57],
+ [-40,-5]]
+ 
+Example 3:
+Input: matrix = [[-48]]
+Output: -48
+
+Constraints:
+
+n == matrix.length
+n == matrix[i].length
+1 <= n <= 100
+-100 <= matrix[i][j] <= 100
+
+class Solution {
+public:
+    // Time out
+    // int minLen = 10001;
+    // void dfs(vector<vector<int>> & matrix, int nowLen, int pos, int depth, int MaxDepth){
+    //     if(depth == MaxDepth){
+    //         minLen = minLen < nowLen ? minLen : nowLen;
+    //         return;
+    //     }
+    //     else{
+    //         // Greedy Algorithm , a way to cut branch to save time.
+    //         // int first = pos > 0 ? pos-1:0 ,second = pos,third = pos < matrix[0].size()-1 ? pos+1 : matrix[0].size()-1;
+    //         // vector<pair<int,int>> v{{matrix[depth+1][first],first},{,second},{matrix[depth+1],third}};
+    //         nowLen += matrix[depth][pos];
+    //         dfs(matrix,nowLen,pos-1 > 0 ? pos-1 : 0, depth+1, MaxDepth);
+    //         dfs(matrix,nowLen,pos, depth+1, MaxDepth);
+    //         dfs(matrix,nowLen,pos+1 < matrix[0].size() ? pos+1 : matrix[0].size()-1, depth+1, MaxDepth);
+    //     }
+    // }
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        // for(int i = 0; i < matrix[0].size() ; i ++){
+        //     dfs(matrix,0,i,0,matrix.size());
+        // }
+        // return minLen;
+
+        for(int i = 1 ; i < matrix.size(); i ++){
+            for(int j = 0; j < matrix[0].size(); j ++){
+                int temp = matrix[i][j];
+                matrix[i][j] += matrix[i-1][j-1 > 0 ? j-1 : 0];
+                matrix[i][j]  = matrix[i-1][j] + temp < matrix[i][j] ? matrix[i-1][j] + temp : matrix[i][j];
+                matrix[i][j]  = matrix[i-1][j+1<matrix[0].size() ? j+1 : matrix[0].size()-1] + temp < matrix[i][j] ? matrix[i-1][j+1<matrix[0].size() ? j+1 : matrix[0].size()-1] + temp : matrix[i][j];
+            } 
+        }
+        int ans = 10001;
+        for(auto a : matrix[matrix.size()-1]){
+            ans = ans < a ? ans : a;
+        }
+        return ans;
+    }
+};
