@@ -1,0 +1,40 @@
+264. Ugly Number II
+Write a program to find the n-th ugly number.
+Ugly numbers are positive numbers whose prime factors only include 2, 3, 5. 
+
+Example:
+Input: n = 10
+Output: 12
+Explanation: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 is the sequence of the first 10 ugly numbers.
+
+Note:  
+
+1 is typically treated as an ugly number.
+n does not exceed 1690.
+
+class Solution {
+public:
+
+    int nthUglyNumber(int n) {
+        
+        vector<int> dp;
+        dp.push_back(1);
+        int p1 = 0, p2 = 0, p3 = 0;
+        while(n>1){
+            int t1 = dp[p1]*2, t2 = dp[p2]*3, t3 = dp[p3]*5;
+            int temp = min(t1,t2),len = dp.size();
+            temp = temp < t3 ? temp : t3;
+            if(dp[len-1] != temp){  // 可能会有重复的元素，比如 6 = 2 * 3 = 3 * 2, 要检查即将添加的元素是否重复，重复则不添加，只移动指针。
+                dp.push_back(temp);
+                n--;
+            }
+                
+            if(temp == t1)p1++;
+            else if(temp == t2)p2++;
+            else p3++;
+            // cout<<temp<<endl;
+            
+        }
+        return dp[dp.size()-1];
+    }
+};
