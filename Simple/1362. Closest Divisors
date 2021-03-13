@@ -1,0 +1,44 @@
+Given an integer num, find the closest two integers in absolute difference whose product equals num + 1 or num + 2.
+Return the two integers in any order.
+
+Example 1:
+Input: num = 8
+Output: [3,3]
+Explanation: For num + 1 = 9, the closest divisors are 3 & 3, for num + 2 = 10, the closest divisors are 2 & 5, hence 3 & 3 is chosen.
+
+Example 2:
+Input: num = 123
+Output: [5,25]
+
+Example 3:
+Input: num = 999
+Output: [40,25]
+
+Constraints:
+1 <= num <= 10^9
+
+class Solution {
+public:
+    vector<int> closestDivisors(int num) {
+        int num1 = num+1, num2 = num+2;
+        int left = sqrt(num1);
+        while(num1 % left != 0){
+            --left;
+        }
+        vector<int> ans1(2);
+        ans1[0] = left;
+        ans1[1] = num1/left;
+
+        left = sqrt(num2);
+        while(num2 % left != 0){
+            --left;
+        }
+        if(num2/left - left < ans1[1] - ans1[0]){
+            vector<int> ans2(2);
+            ans2[0] = left;
+            ans2[1] = num2/left;
+            return ans2;
+        }
+        return ans1;
+    }
+};
