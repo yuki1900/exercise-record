@@ -31,7 +31,7 @@ public:
         if(nums.size() < 5)return 0;
         sort(nums.begin(),nums.end());
         int ans = INT_MAX;
-        for(int i = 0; i <= 3; i ++){
+        for(int i = 0; i <= 3; i ++){ // pay attention to i<=3 instead of i<3.
             ans = ans > nums[nums.size() - 1 - i] - nums[3-i] ? nums[nums.size() - 1 - i] - nums[3-i] : ans;
         }
         return ans;
