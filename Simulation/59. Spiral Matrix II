@@ -1,0 +1,43 @@
+Given a positive integer n, generate an n x n matrix filled with elements from 1 to n2 in spiral order.
+
+Example 1:
+Input: n = 3
+Output: [[1,2,3],[8,9,4],[7,6,5]]
+
+Example 2:
+Input: n = 1
+Output: [[1]]
+
+Constraints:
+1 <= n <= 20
+
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        int total = n * n, top = 0, right = 0, bottom = 0, left = 0, num = 1;
+        vector<vector<int>> ans(n,vector<int>(n));
+        while(num <= total){
+            for(int j = left ; j < n - right; ++ j){
+                ans[top][j] = num++;
+            }
+            if(num > total)break;
+            ++top;
+            for(int j = top; j < n - bottom; ++ j){
+                ans[j][n-1-right] = num++;
+            }
+            if(num > total)break;
+            ++right;
+            for(int j = n - right - 1 ; j >= left ; -- j){
+                ans[n-1-bottom][j] = num++;
+            }
+            if(num > total)break;
+            ++bottom;
+            for(int j = n - bottom - 1 ; j >= top ; -- j){
+                ans[j][left] = num++;
+            }
+            if(num > total)break;
+            ++left;
+        }
+        return ans;
+    }
+};
