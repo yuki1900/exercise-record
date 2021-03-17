@@ -1,0 +1,76 @@
+Given two strings s and t, return the number of distinct subsequences of s which equals t.
+A string's subsequence is a new string formed from the original string by deleting some (can be none) of the characters without disturbing the remaining characters' relative positions.
+(i.e., "ACE" is a subsequence of "ABCDE" while "AEC" is not).
+It is guaranteed the answer fits on a 32-bit signed integer.
+
+Example 1:
+Input: s = "rabbbit", t = "rabbit"
+Output: 3
+Explanation:
+As shown below, there are 3 ways you can generate "rabbit" from S.
+rabbbit
+rabbbit
+rabbbit
+
+Example 2:
+Input: s = "babgbag", t = "bag"
+Output: 5
+Explanation:
+As shown below, there are 5 ways you can generate "bag" from S.
+babgbag
+babgbag
+babgbag
+babgbag
+babgbag
+
+Constraints:
+0 <= s.length, t.length <= 1000
+s and t consist of English letters.
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        // 官方题解里的DP太绕了，还是从开始推导到结尾的思路更清晰。
+        if(s.length() < t.length())return 0;
+        if(s.length() == t.length())return s==t;
+        vector<vector<long long>> dict(t.length(),vector<long long>(s.length()));
+        // 注意初始化，dict[i][j]表示的是t的前i+1个字符构成的字符串中可以在s的前j+1个字符构成的字符串中匹配到几个字串
+        // 当j = 0,i>1时，显然目标串比原串长，所以都是0，只有j = 0和i = 0时需要判断是否可以匹配。
+        dict[0][0] = s[0] == t[0] ? 1 : 0; 
+
+        // 之后初始化第一行，表示的是目标串的第一个字符在原串中可以匹配到的次数
+        for(int j = 1; j < s.length(); j ++){
+            dict[0][j] = s[j] == t[0] ? dict[0][j-1] + 1 : dict[0][j-1];
+        }
+
+        // 递推有两种情况：
+        // 假如 s[j] == t[i] ： 若选择该字符进行匹配，增加的次数为dict[i-1][j-1],若不选择该字符进行匹配，匹配的次数仍为s[j-1]匹配t[i]时的情况。
+        // 所以为 dp[i][j] = s[j] == t[i] ? dict[i-1][j-1] + dict[i][j-1] : dict[i][j-1];
+        for(int i = 1; i < t.length() ; i ++){
+            for(int j = 1; j < s.length() ; j ++){
+                dict[i][j] = s[j] == t[i] ? dict[i-1][j-1] + dict[i][j-1] : dict[i][j-1];
+            }
+        }
+        return dict[t.length()-1][s.length()-1];
+    }
+    // 超时，只要是DP的问题用DFS或者BFS必然超时。
+    // int ans = 0;
+    // void DFS(string s, string t, int poss, int post){
+    //     if(post == t.length()){
+    //         ans++;
+    //         return;
+    //     }
+    //     if(poss == s.length())return ;
+    //     for(int pos = poss; pos < s.length() ; pos ++){
+    //         if(s[pos] == t[post]){
+    //             DFS(s,t,pos+1,post+1);
+    //         }
+    //     }
+    // }
+    // int numDistinct(string s, string t) {
+    //     if(t.length() > s.length())return false;
+    //     if(t.length() == s.length())return s == t;
+    //     DFS(s,t,0,0);
+    //     return ans;
+    // }
+};
