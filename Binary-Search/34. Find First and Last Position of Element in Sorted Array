@@ -1,0 +1,47 @@
+Given an array of integers nums sorted in ascending order, find the starting and ending position of a given target value.
+If target is not found in the array, return [-1, -1].
+Follow up: Could you write an algorithm with O(log n) runtime complexity?
+
+Example 1:
+Input: nums = [5,7,7,8,8,10], target = 8
+Output: [3,4]
+
+Example 2:
+Input: nums = [5,7,7,8,8,10], target = 6
+Output: [-1,-1]
+
+Example 3:
+Input: nums = [], target = 0
+Output: [-1,-1]
+
+Constraints:
+
+0 <= nums.length <= 105
+-109 <= nums[i] <= 109
+nums is a non-decreasing array.
+-109 <= target <= 109
+
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> ans(2,-1);
+        int begin = 0, end = nums.size(), mid = (end - begin) / 2 + begin;
+        while(begin<end){
+            mid = (end - begin) / 2 + begin;
+            if(nums[mid] < target){
+                begin = mid+1;
+            }
+            else if(nums[mid] > target){
+                end = mid;
+            }
+            else break;
+        }
+        if(mid >= nums.size() || nums[mid] != target)return ans;
+        int i = mid, j = mid;
+        while(i >= 0 && nums[i] == target)i--;
+        while(j < nums.size() && nums[j] == target)j++;
+        ans[0] = i+1;
+        ans[1] = j-1;
+        return ans;
+    }
+};
