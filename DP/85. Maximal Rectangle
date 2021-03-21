@@ -1,0 +1,55 @@
+Given a rows x cols binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+
+Example 1:
+Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+Output: 6
+Explanation: The maximal rectangle is shown in the above picture.
+
+Example 2:
+Input: matrix = []
+Output: 0
+
+Example 3:
+Input: matrix = [["0"]]
+Output: 0
+
+Example 4:
+Input: matrix = [["1"]]
+Output: 1
+
+Example 5:
+Input: matrix = [["0","0"]]
+Output: 0
+
+Constraints:
+
+rows == matrix.length
+cols == matrix[i].length
+0 <= row, cols <= 200
+matrix[i][j] is '0' or '1'.
+
+// 遍历每一个位置，bottoms[i][j]记录了该行到j列为止的最大连续1个数也就是矩形的底
+// 找到一个底大于0的位置就向上查找，首先记录高度为1的矩形面积，之后向上查找，更新width，然后求出面积和ans比较
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int ans = 0;
+        if(matrix.size()==0)return ans;
+        vector<vector<int>> bottoms(matrix.size(), vector<int>(matrix[0].size(),0));  // bottoms[i][j] designed to record the longest width from the position before j to j. 
+        for(int i = 0; i < matrix.size(); i ++){
+            for(int j = 0; j < matrix[0].size(); j ++){
+                if(matrix[i][j] == '1'){
+                    bottoms[i][j] = j > 0 ? bottoms[i][j-1] + 1 : 1;    // update bottoms[i][j]
+                    int top = i, width = bottoms[i][j];       
+                    while(top>=0 && width > 0){               // check if width is 0
+                        width = min(width,bottoms[top][j]);   // To find the shortest width from row i to row 0.
+                        int temp = width * (i-top+1);
+                        ans = ans > temp ? ans : temp;
+                        --top;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
