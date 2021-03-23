@@ -36,6 +36,7 @@ public:
     unordered_map<TreeNode*, int> f,g; // f[node]表示rob了node之后所能得到得最大钱数，g[node]表示没有rob了node之后所能得到得最大钱数
     void DFS(TreeNode* root){
         if(!root)return;
+        // 左右根的遍历顺序，即后序遍历，确保当遍历到根时，其子节点的f和g值已经确定
         DFS(root->left);
         DFS(root->right);
         f[root] = root->val + g[root->left] + g[root->right];   // 若是rob了root，那么左孩子和右孩子都不能rob
