@@ -1,0 +1,46 @@
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,2]
+Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
+Example 2:
+
+Input: nums = [0]
+Output: [[],[0]]
+ 
+
+Constraints:
+
+1 <= nums.length <= 10
+-10 <= nums[i] <= 10
+
+class Solution {
+public:
+    vector<vector<int>> ans;
+    map<vector<int>,int> dict;
+    void search(vector<int> & nums, int pos, vector<int> &temp){  // 用引用的话快一些
+        if(pos == nums.size()){
+            if(dict.find(temp) == dict.end()){
+                ans.push_back(temp);
+                dict[temp] = 1;
+            }
+            return;
+        }
+        search(nums,pos+1,temp);
+        temp.push_back(nums[pos]);
+        search(nums,pos+1,temp);
+        temp.pop_back();  // 使用引用时需要回溯
+    }
+
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(),nums.end());  // 排序，不然map将失去判断是否存在该vector的判断能力，因为乱序时，假如两个vector中元素相同但是位置不同也会被认为是不同的vector，与集合不符。
+        vector<int> temp;
+        search(nums,0,temp);
+        return ans;
+    }
+};
