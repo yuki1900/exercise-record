@@ -1,0 +1,63 @@
+Given a list of non-negative integers nums, arrange them such that they form the largest number.
+Note: The result may be very large, so you need to return a string instead of an integer.
+
+Example 1:
+
+Input: nums = [10,2]
+Output: "210"
+
+Example 2:
+
+Input: nums = [3,30,34,5,9]
+Output: "9534330"
+
+Example 3:
+
+Input: nums = [1]
+Output: "1"
+Example 4:
+
+Input: nums = [10]
+Output: "10"
+
+Constraints:
+
+1 <= nums.length <= 100
+0 <= nums[i] <= 109
+
+class Solution {
+public:
+    // 排序需要注意，假如某个位置的字符更大，那么毫无疑问这个字符串应该更靠近高位，但是有一种特殊情况是两个字符串前缀都相等并且
+    // 前缀的长度等于短字符串的长度，此时需要循环比较（取余数），取余时可能又是前缀相等，只有一种情况就是循环到两个字符串到恰好到结尾
+    // 也就是循环的最大次数为两个字符串的长度的最小公倍数。 
+    // 比如说 4320 和 43204319（前者更大），以及 4320 和 432043204（后者更大）
+    static bool cmp(string &s1, string &s2){
+        int len1 = s1.length(), len2 = s2.length();
+        int i, j, len = len1 * len2;
+        for(j = len1; j < len ; j ++)if(j % len1 == 0 && j % len2 == 0)break;
+        for(i = 0; i < len; i++){
+            if(s1[i%len1] == s2[i%len2])continue;
+            if(s1[i%len1] < s2[i%len2])return false;
+            else return true;
+        }
+        return false;
+    }
+    string largestNumber(vector<int>& nums) {
+        vector<string> strs(nums.size());
+        for(int i = 0 ; i < nums.size(); i ++){ // 先转化为字符串形式
+            stringstream ss;
+            ss << nums[i];
+            string s;
+            ss >> s;
+            strs[i] = s;    
+        }
+        sort(strs.begin(), strs.end(), cmp);    // 之后进行排序
+        string ans = "";
+        int count = 0;
+        for(auto s : strs){
+            ans+=s;
+            if(s == "0")count ++;
+        }
+        return count == nums.size() ? "0" : ans;
+    }
+};
